@@ -1,0 +1,54 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class CityMap {
+public:
+	string getLegend(vector <string>, vector <int>);
+};
+
+string CityMap::getLegend(vector <string> cityMap, vector <int> ps) {
+	map<char, int> mymap;
+	for(int i=0;i<cityMap.size();i++) {
+		for(int j=0;j<cityMap[i].size();j++) {
+			if(cityMap[i][j] != '.') {
+				char c = cityMap[i][j];
+				if(!mymap[c])
+					mymap[c] = 1;
+				else
+					mymap[c] += 1;
+			}
+		}
+	}
+	string res = "";
+	map<char, int>::iterator myiter;
+	for(int i=0;i<ps.size();i++ ) {
+		for(myiter = mymap.begin();myiter != mymap.end();myiter++) {
+			if(myiter->second == ps[i]){
+				res+= myiter->first;
+				break;
+			}
+		}
+	}
+	return res;
+}
+
+
+//Powered by [KawigiEdit] 2.0!

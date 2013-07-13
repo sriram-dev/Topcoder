@@ -1,0 +1,93 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class TheNumberGameDiv2 {
+public:
+	int minimumMoves(int, int);
+	void rec(int from, int to, int nmoves, bool);
+	int reverse(int a);
+	int minv;
+};
+
+int TheNumberGameDiv2::reverse(int a) {
+	vector<int> digits;
+	while(a > 0) {
+		digits.push_back(a%10);
+		a/=10;
+	}
+	// 123 
+	int n = digits.size()-1;
+	int rev =0;
+	int itr = 0;
+	while(n >= 0) {
+		rev += digits[n] * (int)pow((double)10, (double)itr++);
+		n--;
+	}
+	return rev;
+}
+
+void TheNumberGameDiv2::rec(int from, int to, int nmoves, bool revdone) {	
+	if(from < to) {
+		if(reverse(from) == to) {
+		nmoves += 1;
+		if(nmoves < minv)
+			minv = nmoves;
+		}
+		else{
+			return;
+		}
+	}	
+	cout<<"from:"<<from<<endl;
+	cout<<"to:"<<to<<endl;
+	if(from == to){
+		cout<<"minv "<<minv<<endl;
+		if(nmoves < minv)
+			minv = nmoves;
+	}
+	else {		
+		if(!revdone) {
+			cout<<"calling with rev : " << reverse(from)<<endl;
+			rec(reverse(from), to, nmoves+1, true);
+		}
+		cout<<"calling with div 10: "<< from/10<<endl;
+		rec(from/10, to , nmoves+1, false);	
+	}		
+}
+
+int TheNumberGameDiv2::minimumMoves(int A, int B) {
+	if(B > A ) {
+		if(reverse(A) == B)
+			return 1;
+		else
+			return -1;
+	}
+	if(reverse(A) == B)
+		return 1;
+	this->minv = 1000000009;	
+	cout<<"rev "<<reverse(123456789)<<endl;
+	rec(A, B,0, false);	
+	if(minv == 1000000009)
+		return -1;
+	return minv;
+}
+
+
+//Powered by [KawigiEdit] 2.0!

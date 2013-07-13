@@ -1,0 +1,93 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class PolygonTraversal2 {
+public:
+	vector< pair<int, int> > linesdrawn;
+	vector<int> rempoints;
+	int lastdest;
+	int cnt;
+	int n;
+	vector<int> points;
+	int count(int, vector <int>);
+	void rec(int cur, int pos);
+	int isIntersecting(int x, int y);
+};
+
+int PolygonTraversal2::isIntersecting(int x, int y) {
+	for(int i=0;i<linesdrawn.size();i++) {
+		pair <int, int> line = linesdrawn[i];
+		if(line.first > line.second){
+			int t = line.first;
+			line.first = line.second;
+			line.second = t;
+		}
+		if( ((x>line.first && x < line.second) && (y<line.first || y >line.second)) || 
+			((x < line.first || x >line.second) && ( y > line.first && y < line.second)))
+			return 1;  
+	}
+	return 0;	
+}
+
+void PolygonTraversal2::rec(int cur, int pos) {
+	if(pos == n) {
+		if(isIntersecting(cur, points[0]))
+			cnt++;
+	}
+	else {
+		sort(rempoints.begin(), rempoints.end());
+		for(int i=0;i<rempoints.size();i++) {			
+			if(isIntersecting(cur, rempoints[i])) {
+				//cout<<"point chosen :"<<rempoints[i]<<endl;
+				linesdrawn.push_back(make_pair(cur, rempoints[i]));
+				int tp = rempoints[i];
+				rempoints.erase(find(rempoints.begin(), rempoints.end(),tp));
+				rec(tp, pos+1);
+				linesdrawn.erase(find(linesdrawn.begin(), linesdrawn.end(), make_pair(cur, tp)));
+				rempoints.push_back(tp);
+				sort(rempoints.begin(), rempoints.end());
+			}
+		}
+	}
+}
+
+int PolygonTraversal2::count(int N, vector <int> points) {
+	this->cnt = 0;
+	this->n = N;
+	this->points = points;
+	for(int i=0;i<points.size()-1;i++) {
+		linesdrawn.push_back(make_pair(points[i], points[i+1]));
+	}
+	for(int i=1;i<=N;i++) {
+		bool found = false;
+		for(int j=0;j<points.size();j++) {
+			if(i == points[j])
+				found = true;
+		}
+		if(!found)
+			rempoints.push_back(i);
+	}
+	rec(points[points.size()-1], points.size());
+	return cnt;
+}
+
+
+//Powered by [KawigiEdit] 2.0!
